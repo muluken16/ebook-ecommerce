@@ -6,7 +6,12 @@ services:
     region: oregon
     plan: free
     branch: main
-    buildCommand: python build.py
+    buildCommand: |
+      pip install --upgrade pip setuptools wheel
+      pip install -r requirements.txt
+      cd backend
+      python manage.py collectstatic --no-input --settings=dl.settings_production
+      python manage.py migrate --settings=dl.settings_production
     startCommand: cd backend && gunicorn dl.wsgi:application
     envVars:
       - key: PYTHON_VERSION
